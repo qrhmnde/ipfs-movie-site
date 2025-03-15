@@ -4,25 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IPFS Movie Streaming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #ffcc00;
+        }
+        video {
+            width: 80%;
+            max-width: 800px;
+            border: 2px solid #ffcc00;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .loading {
+            font-size: 18px;
+            color: #ffcc00;
+        }
+    </style>
 </head>
 <body>
     <h1>Latest Movie</h1>
-    <video id="moviePlayer" width="640" height="360" controls>
+    <p class="loading">Loading movie... Please wait</p>
+    <video id="moviePlayer" controls>
         <source id="movieSource" src="" type="video/mp4">
         Your browser does not support the video tag.
     </video>
 
     <script>
         async function fetchLatestCID() {
-            const API_KEY = "6f5f95c897a52f36725a";
-            const API_SECRET = "06c4142f636fb2025b74fe5991aa91149197c532127ae54de3fac4300b40c6ec";
+            const API_KEY = "YOUR_PINATA_API_KEY";
+            const API_SECRET = "YOUR_PINATA_SECRET_KEY";
 
             try {
                 let response = await fetch("https://api.pinata.cloud/data/pinList?status=pinned", {
                     method: "GET",
                     headers: {
-                        "pinata_api_key": API_KEY,
-                        "pinata_secret_api_key": API_SECRET
+                        "pinata_api_key": 6f5f95c897a52f36725a,
+                        "pinata_secret_api_key": 06c4142f636fb2025b74fe5991aa91149197c532127ae54de3fac4300b40c6ec
                     }
                 });
 
@@ -32,8 +57,10 @@
 
                 document.getElementById("movieSource").src = videoUrl;
                 document.getElementById("moviePlayer").load();
+                document.querySelector(".loading").style.display = "none";
             } catch (error) {
                 console.error("❌ Error Fetching CID:", error);
+                document.querySelector(".loading").innerText = "Failed to load movie!";
             }
         }
 
