@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPFS Movie Streaming</title>
+</head>
+<body>
+    <h1>Latest Movie</h1>
+    <video id="moviePlayer" width="640" height="360" controls>
+        <source id="movieSource" src="" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        async function fetchLatestCID() {
+            const API_KEY = "6f5f95c897a52f36725a";
+            const API_SECRET = "06c4142f636fb2025b74fe5991aa91149197c532127ae54de3fac4300b40c6ec";
+
+            try {
+                let response = await fetch("https://api.pinata.cloud/data/pinList?status=pinned", {
+                    method: "GET",
+                    headers: {
+                        "pinata_api_key": API_KEY,
+                        "pinata_secret_api_key": API_SECRET
+                    }
+                });
+
+                let data = await response.json();
+                let latestCID = data.rows[0].ipfs_pin_hash;
+                let videoUrl = `https://ipfs.io/ipfs/${latestCID}`;
+
+                document.getElementById("movieSource").src = videoUrl;
+                document.getElementById("moviePlayer").load();
+            } catch (error) {
+                console.error("❌ Error Fetching CID:", error);
+            }
+        }
+
+        fetchLatestCID();
+    </script>
+</body>
+</html>
